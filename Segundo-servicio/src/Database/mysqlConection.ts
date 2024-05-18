@@ -3,6 +3,11 @@ import { config } from 'dotenv';
 
 config();
 
+console.log('DB_HOST_MYSQL:', process.env.DB_HOST_MYSQL);
+console.log('DB_USER_MYSQL:', process.env.DB_USER_MYSQL);
+console.log('DB_PASSWORD_MYSQL:', process.env.DB_PASSWORD_MYSQL);
+console.log('DB_DATABASE_MYSQL:', process.env.DB_DATABASE_MYSQL);
+
 @Entity('products')
 export class ProductModel {
   @PrimaryGeneratedColumn()
@@ -42,11 +47,14 @@ export class DBConnection {
         password: process.env.DB_PASSWORD_MYSQL!,
         database: process.env.DB_DATABASE_MYSQL!,
         entities: [ProductModel],
-        synchronize: true,
+       
+      }).then(() => {
+        console.log('Conexión exitosa a la base de datos con MySQL LISTA!');
       });
-      console.log('Conexión exitosa a la base de datos con MySQL LISTA!');
     } catch (e) {
       console.error(`Error al conectar a la base de datos: ${e}`);
     }
   }
 }
+
+const dbConnection = new DBConnection();

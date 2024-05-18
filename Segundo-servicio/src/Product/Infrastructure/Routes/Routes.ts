@@ -1,19 +1,29 @@
-import { Router, Application } from 'express';
-import { initializeEndpoints as initializeEndpointsCreateProduct } from '../Controllers/CreateProductController';
-import { initializeEndpoints as initializeEndpointsListProduct } from '../Controllers/ListProductController';
-import { initializeEndpoints as initializeEndpointsDeleteProduct } from '../Controllers/DeleteProductController';
+// Routes.ts
 
-const apiRouter = Router();
+import express, { Router } from 'express';
+import { CreateProductController } from '../Controllers/CreateProductController';
+import { DeleteProductController } from '../Controllers/DeleteProductController';
+import { ListProductController } from '../Controllers/ListProductController';
+import { Repository } from '../Repositories/MysqlRepository';
 
-function initializeEndpoints(repository: any) {
-    initializeEndpointsCreateProduct(repository);
-    initializeEndpointsListProduct(repository);
-    initializeEndpointsDeleteProduct(repository);
-}
+const router: Router = express.Router();
+const repository: Repository = new Repository();
 
-function initializeApp(app: Application, repository: any) {
-    initializeEndpoints(repository);
-    app.use('/api', apiRouter); // Puedes cambiar '/api' según tu preferencia
-}
+const createProductController: CreateProductController = new CreateProductController(repository);
+const deleteProductController: DeleteProductController = new DeleteProductController(repository);
+const listProductController: ListProductController = new ListProductController(repository);
 
-export { apiRouter, initializeApp };
+// Rutas
+router.post('/products', async (req, res) => {
+  await createProductController.create(req, res);
+});
+
+router.get('/products', async (req, res) => {
+  await listProductController.list(req, res);
+});
+
+router.delete('/products/:productId', async (req, res) => {
+  await deleteProductController.delete(req, res);
+});
+
+export default router;

@@ -14,8 +14,8 @@ app.use(morgan('dev'));
 const PORT = process.env.PORT || 3000;
 const GATEWAY = process.env.SERVICE_NAME;
 
-// app.use('/api/v1/products',proxy('http://localhost:3002'));
-app.use('/api/v1/orders', proxy('http://127.0.0.1:3002'));
+app.use('/api/v1/inventary',proxy('http://127.0.0.1:3001'));
+app.use('/api/v2/orders', proxy('http://127.0.0.1:3002'));
 
 // rutas de auth
 

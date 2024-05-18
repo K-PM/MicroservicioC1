@@ -1,18 +1,19 @@
-import { AProduct as ProductDomain } from '../Domain/Entities/AProduct';
+import { Repository } from '../Infrastructure/Repositories/MysqlRepository';
+import { AProduct } from '../Domain/Entities/AProduct';
 
 export class CreateProductUseCase {
-    private repository: any;
+  constructor(private repository: Repository) {}
 
-    constructor(repository: any) {
-        this.repository = repository;
+  async execute(productData: AProduct): Promise<[boolean, AProduct | { error: string }]> {
+    try {
+      // Llamar al método del repositorio para guardar el producto
+      const product = await this.repository.save(productData);
+      
+      // Si el producto se guardó correctamente, devolver éxito y el producto creado
+      return [true, product];
+    } catch (error: any) { // Aquí se especifica el tipo 'any' para 'error'
+      // Si hay algún error al guardar el producto, devolver error
+      return [false, { error: error.toString() }];
     }
-
-    async execute(product: ProductDomain): Promise<[boolean, ProductDomain | { error: string }]> {
-        try {
-            await this.repository.save(product);
-            return [true, product];
-        } catch (e: any) { // Captura cualquier tipo de error
-            return [false, { error: e.toString() }];
-        }
-    }
+  }
 }

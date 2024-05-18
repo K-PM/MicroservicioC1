@@ -1,21 +1,23 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import { DeleteProductUseCase } from '../../Application/DeleteProductUseCase';
+import { Repository } from '../Repositories/MysqlRepository';
 
-const deleteProductRouter = Router();
+export class DeleteProductController {
+  private deleteProductUseCase: DeleteProductUseCase;
 
-function initializeEndpoints(repository: any) {
-    const deleteProductUseCase = new DeleteProductUseCase(repository);
+  constructor(private repository: Repository) {
+    this.deleteProductUseCase = new DeleteProductUseCase(repository);
+  }
 
-    deleteProductRouter.delete('/delete:id', async (req: Request, res: Response) => {
-        try {
-            const id: string = req.params.id;
-            await deleteProductUseCase.execute(id);
-            return res.status(200).json({ message: 'Product deleted' });
-        } catch (e: any) {
-            return res.status(400).json({ message: 'Error deleting Product', error: e.toString() });
-        }
-    });
+  async delete(req: Request, res: Response): Promise<void> {
+    try {
+      const productId: number = parseInt(req.params.productId); // Obtener el ID del producto a eliminar
+
+      await this.deleteProductUseCase.execute(productId);
+
+      res.status(200).json({ message: 'Product deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error', error: error });
+    }
+  }
 }
-
-export { deleteProductRouter, initializeEndpoints };
-

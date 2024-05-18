@@ -1,11 +1,12 @@
+// ListProductUseCase.ts
+
+import { Repository } from '../Infrastructure/Repositories/MysqlRepository';
+import { ProductModel } from '../../Database/mysqlConection';
+
 export class ListProductUseCase {
-    private repository: any;
+  constructor(private repository: Repository) {}
 
-    constructor(repository: any) {
-        this.repository = repository;
-    }
-
-    async execute(): Promise<any[]> {
-        return this.repository.list_all();
-    }
+  async execute(): Promise<ProductModel[]> {
+    return this.repository.list_all();
+  }
 }

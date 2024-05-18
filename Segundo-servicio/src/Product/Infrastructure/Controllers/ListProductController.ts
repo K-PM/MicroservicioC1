@@ -1,20 +1,23 @@
-import { Request, Response, Router } from 'express';
+// ListProductController.ts
+
+import { Request, Response } from 'express';
 import { ListProductUseCase } from '../../Application/ListProductUseCase';
+import { Repository } from '../Repositories/MysqlRepository';
 
-const getListProductsRouter = Router();
+export class ListProductController {
+  private listProductUseCase: ListProductUseCase;
 
-function initializeEndpoints(repository: any) {
-    const listProductUseCase = new ListProductUseCase(repository);
+  constructor(private repository: Repository) {
+    this.listProductUseCase = new ListProductUseCase(repository);
+  }
 
-    getListProductsRouter.get('/list-products', async (req: Request, res: Response) => {
-        try {
-            const products = await listProductUseCase.execute();
-            const productDicts = products.map(product => product.toDict());
-            return res.status(200).json(productDicts);
-        } catch (e: any) {
-            return res.status(400).json({ message: 'Error getting products', error: e.toString() });
-        }
-    });
+  async list(req: Request, res: Response): Promise<void> {
+    try {
+      const products = await this.listProductUseCase.execute();
+      res.status(200).json({ products }); // Devolver los productos en un objeto JSON
+    } catch (error) {
+      console.error('Error al obtener la lista de productos:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
 }
-
-export { getListProductsRouter, initializeEndpoints };

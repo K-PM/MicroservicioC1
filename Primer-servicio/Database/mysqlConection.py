@@ -19,8 +19,6 @@ class OrderModel(Base):
     total = Column( Integer,nullable=False )
     date = Column( String(50),nullable=False )
     status = Column( Enum(StatusType) )
-    
-    
 
     # foránea que apunta a la tabla orders
     order_produc_uuid = Column(String(36), ForeignKey('order_products.order_produc_uuid'))
