@@ -14,7 +14,7 @@ const deleteProductController: DeleteProductController = new DeleteProductContro
 const listProductController: ListProductController = new ListProductController(repository);
 
 // Rutas
-router.post('/products', async (req, res) => {
+router.post('/create-products', async (req, res) => {
   await createProductController.create(req, res);
 });
 
